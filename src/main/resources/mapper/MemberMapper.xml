@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.luobi.study.mybatis.mapper.MemberMapper">
+
+    <sql id="memberColum">
+        member_id,
+        member_nick,
+        member_gender,
+        member_age,
+        member_city
+    </sql>
+
+    <sql id="memberSearchCondition">
+        <if test="gender != null">
+            AND member_gender = #{gender}
+        </if>
+        <if test="minAge != null">
+            AND member_age &gt;= #{minAge}
+        </if>
+        <if test="maxAge != null">
+            AND member_age &lt;= #{maxAge}
+        </if>
+        <if test="city != null">
+            AND member_city = #{city}
+        </if>
+    </sql>
+
+    <select id="searchMember" resultType="Member">
+        SELECT
+            <include refid="memberColum"/>
+        FROM
+            member
+        <trim prefix="WHERE" prefixOverrides="AND | OR" suffix="ORDER BY member_age">
+            <include refid="memberSearchCondition"/>
+        </trim>
+    </select>
+
+    <select id="searchMemberByCity" resultType="Member">
+        SELECT
+            <include refid="memberColum"/>
+        FROM
+            member
+        <where>
+            <foreach collection="list" item="cityName" open="member_city IN (" separator="," close=")">
+                #{cityName}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="searchMemberByIdOrNick" resultType="Member">
+        SELECT
+            <include refid="memberColum"/>
+        FROM
+            member
+        <where>
+            <choose>
+                <when test="memberId != null">
+                    AND member_id = #{memberId}
+                </when>
+                <when test="memberNick != null">
+                    AND member_nick LIKE CONCAT('%', #{memberNick}, '%')
+                </when>
+                <otherwise>
+                    AND member_Age >= 40
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <insert id="addMember" parameterType="Member">
+        INSERT INTO member
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">
+                member_id,
+            </if>
+            <if test="memberNick != null">
+                member_nick,
+            </if>
+            <if test="memberGender != null">
+                member_gender,
+            </if>
+            <if test="memberAge != null">
+                member_age,
+            </if>
+            <if test="memberCity != null">
+                member_city
+            </if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">
+                #{memberId},
+            </if>
+            <if test="memberNick != null">
+                #{memberNick},
+            </if>
+            <if test="memberGender != null">
+                #{memberGender},
+            </if>
+            <if test="memberAge != null">
+                #{memberAge},
+            </if>
+            <if test="memberCity != null">
+                #{memberCity}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateMember" parameterType="Member">
+        UPDATE member
+        <set>
+            <if test="memberNick != null">
+                member_nick = #{memberNick},
+            </if>
+            <if test="memberGender != null">
+                member_gender = #{memberGender},
+            </if>
+            <if test="memberAge != null">
+                member_age = #{memberAge},
+            </if>
+            <if test="memberCity != null">
+                member_city = #{memberCity},
+            </if>
+        </set>
+        WHERE
+            member_id = #{memberId}
+    </update>
+
+    <delete id="deleteMember" parameterType="list">
+        DELETE FROM member
+        WHERE member_id IN
+            <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </delete>
+
+</mapper>

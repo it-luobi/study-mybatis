@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!-- configuration核心配置文件 -->
+<configuration>
+
+    <!-- 属性: 配置数据源 -->
+    <properties resource="jdbc.properties"/>
+
+    <!-- 日志配置 -->
+    <settings>
+        <!-- LOG4J2 -->
+        <setting name="logImpl" value="LOG4J2"/>
+
+        <!-- 标准日志输出 -->
+        <!--<setting name="logImpl" value="STDOUT_LOGGING"/>-->
+
+        <!-- 是否开启驼峰命名自动映射，即从经典数据库列名 member_id 映射到经典 Java 属性名 memberId -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <!-- 别名: 扫描实体类的包，实体类的默认别名就是这个类的类名，首字母小写 -->
+    <typeAliases>
+        <package name="com.luobi.study.mybatis.model"/>
+    </typeAliases>
+
+    <!-- environments配置环境组，default默认环境 -->
+    <environments default="development">
+        <!-- environment环境变量 -->
+        <environment id="development">
+            <!-- transactionManager配置事务管理器, MyBatis默认的事务管理器是JDBC -->
+            <transactionManager type="JDBC"/>
+            <!-- 配置连接池：POOLED -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- 映射器：每一个Mapper.xml需要在MyBatis核心配置文件中注册 -->
+    <mappers>
+        <mapper resource="mapper/HeroMapper.xml"/>
+        <mapper resource="mapper/StudentMapper.xml"/>
+        <mapper resource="mapper/TeacherMapper.xml"/>
+        <mapper resource="mapper/MemberMapper.xml"/>
+    </mappers>
+
+</configuration>

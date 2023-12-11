@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- namespace绑定一个对应的Mapper接口 -->
+<mapper namespace="com.luobi.study.mybatis.mapper.StudentMapper">
+
+    <!-- 方式一：按照查询嵌套处理 -->
+    <select id="listStudent" resultMap="studentDto">
+        SELECT
+            id,
+            name,
+            tid
+        FROM
+            student
+    </select>
+
+    <resultMap id="studentDto" type="StudentDto">
+        <result property="studentId" column="id"/>
+        <result property="studentName" column="name"/>
+        <association property="teacher" column="tid" javaType="Teacher" select="getTeacherById"/>
+    </resultMap>
+
+    <select id="getTeacherById" resultType="Teacher">
+        SELECT
+            id,
+            name
+        FROM
+            teacher
+        WHERE
+            id = #{id}
+    </select>
+
+    <!-- 方式二：按照结果嵌套处理 -->
+    <select id="listStudent2" resultMap="studentDto2">
+        SELECT
+            s.id      AS sid,
+            s.name    AS sname,
+            t.id      AS tid,
+            t.name    AS tname
+        FROM
+            student s,
+            teacher t
+        WHERE
+            s.tid = t.id
+    </select>
+
+    <resultMap id="studentDto2" type="StudentDto">
+        <result property="studentId" column="sid"/>
+        <result property="studentName" column="sname"/>
+        <association property="teacher" javaType="Teacher">
+            <result property="id" column="tid"/>
+            <result property="name" column="tname"/>
+        </association>
+    </resultMap>
+
+</mapper>

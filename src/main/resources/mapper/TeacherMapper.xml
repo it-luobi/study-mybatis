@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.luobi.study.mybatis.mapper.TeacherMapper">
+
+    <!-- 方式一：按照查询嵌套处理 -->
+    <select id="listTeacher" resultMap="teacherDto">
+        SELECT
+            id,
+            name
+        FROM
+            teacher
+    </select>
+
+    <resultMap id="teacherDto" type="TeacherDto">
+        <result property="teacherId" column="id"/>
+        <result property="teacherName" column="name"/>
+        <collection property="studentList" column="id" javaType="List" ofType="Student" select="listStudentByTeacherId"/>
+        <!-- JavaType: 指定实体类中属性的类型 -->
+        <!-- ofType: 指定映射到List或者集合中的pojo类型，即泛型中的约束类型 -->
+    </resultMap>
+
+    <select id="listStudentByTeacherId" resultType="Student">
+        SELECT
+            id,
+            name,
+            tid
+        FROM
+            student
+        WHERE
+            tid = #{teacherId}
+    </select>
+
+    <!-- 方式二：按照结果嵌套处理 -->
+    <select id="listTeacher2" resultMap="teacherDto2">
+        SELECT
+            t.id      AS tid,
+            t.name    AS tname,
+            s.id      AS sid,
+            s.name    AS sname
+        FROM
+            teacher t,
+            student s
+        WHERE t.id = s.tid
+    </select>
+
+    <resultMap id="teacherDto2" type="TeacherDto">
+        <result property="teacherId" column="tid"/>
+        <result property="teacherName" column="tname"/>
+        <collection property="studentList" ofType="Student">
+            <result property="id" column="sid"/>
+            <result property="name" column="sname"/>
+            <result property="tid" column="tid"/>
+        </collection>
+    </resultMap>
+
+</mapper>

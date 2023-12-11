@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- namespace绑定一个对应的Mapper接口 -->
+<mapper namespace="com.luobi.study.mybatis.mapper.HeroMapper">
+
+    <select id="getHeroList" resultType="Hero">
+        SELECT
+            id,
+            name,
+            city
+        FROM
+            hero
+    </select>
+
+    <select id="getHeroById" parameterType="int" resultType="Hero">
+        SELECT
+            id,
+            name,
+            city
+        FROM
+            hero
+        WHERE
+            id = #{id}
+    </select>
+
+    <insert id="addHero" parameterType="Hero">
+        INSERT INTO
+            hero(id, name, city)
+        VALUES
+            (#{id}, #{name}, #{city})
+    </insert>
+
+    <update id="updateHero" parameterType="Hero">
+        UPDATE
+            hero
+        SET
+            name = #{name},
+            city = #{city}
+        WHERE
+            id = #{id}
+    </update>
+
+    <delete id="deleteHero" parameterType="Hero">
+        DELETE FROM hero WHERE id = #{id}
+    </delete>
+
+</mapper>
