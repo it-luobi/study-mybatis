@@ -8,7 +8,7 @@
 
 ## 说明
 
-[MyBatis 文档](https://mybatis.org/mybatis-3/zh/index.html)
+[MyBatis 文档](https://mybatis.org/mybatis-3/zh_CN/index.html)
 
 - 主要包括以下内容：
 1. MyBatis 配置日志 LOG4J2
